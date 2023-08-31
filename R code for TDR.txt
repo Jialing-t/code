@@ -1,0 +1,21 @@
+
+library(vegan)
+otu = read.table("otu.txt",sep="\t",header = T, row.names=1)
+bray.dist = vegdist(t(otu), method="bray")
+write.table(as.matrix(bray.dist), file = "bray.txt", sep="\t", col.names = NA)
+
+dat<- read.table("clipboard",header = TRUE) 
+p1<-ggplot(data = dat, aes(x = time, y =com))+
+  geom_point(aes(color = LX),size=2.5) +
+  scale_color_manual(values = c('#A1D7F2', '#E9A496','#0F63A3','#DC5438'), limits = c('CA', 'CW','SA','SW')) +
+  geom_smooth(aes(color = LX), method = 'lm', se = TRUE, show.legend = FALSE,level=0.95) +
+  theme_bw() 
+p1
+
+dat<- read.table("clipboard",header = TRUE) 
+p2<-ggplot(data = dat, aes(x = time, y =dis))+
+  geom_point(aes(color = LX),size=2.5) +
+  scale_color_manual(values = c('#0F63A3','#E98580'), limits = c('C', 'W')) +
+  geom_smooth(aes(color = LX), method = 'lm', se = TRUE, show.legend = FALSE,level=0.95) +
+  theme_bw() 
+p2

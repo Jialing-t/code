@@ -1,0 +1,38 @@
+###repeated measures ANOVA
+dt=read.table("clipboard",sep="\t",header = T)
+
+dt$warming <- as.factor(dt$warming) 
+dt$time <- as.factor(dt$time) 
+fit <- aov(scale(SOC) ~ time*warming + Error(block/time), dt) 
+summary(fit)  
+
+
+###violin plot
+library(ggplot2)
+library(patchwork)
+library(ggbreak)
+library(ggsignif)
+library(MetBrewer)
+
+data <- read.table("clipboard",sep="\t",header = T)
+data$factor <- factor(data$factor, levels = c("Warm","Year","Warm*Year"))
+names(data)
+(p = ggplot(data = data,aes(x= factor,y = SOC,fill = factor)) +
+    geom_bar(data = data,aes(x= factor,y = SOC,fill = factor),stat = "identity",width = 0.9,colour= "black",alpha=0.5) +
+    geom_text(aes(label = X.2),vjust = -0.3,size = 5)+
+    facet_wrap(vars(tillage), ncol = 2,scales = "fixed") +
+    labs(x="",y="Effect size")+
+    scale_fill_met_d("Signac",direction=1))
+
+(p1=p + theme_bw()+ theme(panel.grid=element_blank()) +theme(legend.position='none')
+  + theme(panel.border = element_blank()) 
+  + theme(panel.background=element_rect(fill='transparent',color='black'))
+  + theme(axis.text.x=element_text(colour="black",size=15,face = "bold")) 
+  + theme(axis.text.y=element_text(colour = "black",size=15,face = "bold")) 
+  + theme(axis.title.y = element_text(size = 15,face = "bold"))
+  + theme(axis.title.x = element_text(size = 15,face = "bold"))
+  + theme(legend.text = element_text(colour = "black",size = 12)) 
+  + theme(legend.title = element_text(size = 15,colour = "black")))
+
+
+

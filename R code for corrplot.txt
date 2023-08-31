@@ -1,0 +1,12 @@
+#### corrplot###
+library(corrplot)
+library(psych)
+CUE<-read.csv("CUE.csv",header=T, row.names=1)
+BAC<-read.csv("BAC.csv",header=T, row.names=1)
+
+phylum_env_corr <- corr.test(CUE, BAC, method = 'spearman')
+phylum_corr_final <- phylum_env_corr$r * phylum_env_corr$p
+col3 <- colorRampPalette(c("#0f63a3", "white", "#E98580"))
+corrplot (phylum_env_corr$r, p.mat = phylum_env_corr$p, method ="square" , insig = 'label_sig',sig.level = c(.001, .01, .10), pch.cex = .9,pch.col = "white",
+         col.lim=c(-0.8,0.8),is.corr = FALSE,
+         col = col3(100),tl.col="black",tl.cex=0.6)

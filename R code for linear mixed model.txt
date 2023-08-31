@@ -1,0 +1,33 @@
+### linear mixed model###
+library(lme4)
+library(car)
+library(MuMIn)
+data<- read.table("clipboard",header = TRUE) 
+year=as.factor(data$year)
+treat =scale(data$treat)
+mic =scale(data$mic)
+fm1<-lmer(mic ~treat+(1|year),data=data)
+summary(fm1)
+car::Anova(fm1,type=2)
+coefs<-coef(summary(fm1))[ , "Estimate"]
+r2<-r.squaredGLMM(fm1)
+r=ifelse(coefs>0,(r2[1,1])^0.5,-(r2[1,1])^0.5)
+car::Anova(fm1,type=2)
+r
+
+library(ggplot2)
+library(forcats)
+df<- read.table("clipboard",header = TRUE) 
+df$label<-fct_inorder(df$label)
+p <- ggplot(data = df)+
+  geom_point(aes(x=mean,y=label),size = 2)+
+  geom_errorbar(aes(x = mean,y=label,xmin=lower,xmax=upper))+
+  geom_vline(xintercept = 0, color = "black",linetype="dashed",alpha=0.6)+
+  labs(x=NULL,y=NULL)+
+  facet_grid(group ~.,scales = "free",space = "free")+
+  theme_minimal()+
+  theme(text=element_text(size=18, color="black"))+
+  theme(panel.spacing = unit(1, "lines"))
+p
+
+
